@@ -102,6 +102,29 @@ export function Chips<T extends string | number>({
   );
 }
 
+/**
+ * Container for interactive visualizations (SVG diagrams / canvases)
+ * inside glass panels: dark inset stage + optional caption + optional
+ * hover-tooltip line driven by the child via onTip.
+ */
+export function VizBox({
+  title, caption, tip, children,
+}: {
+  title?: string;
+  caption?: ReactNode;
+  tip?: string | null;
+  children: ReactNode;
+}) {
+  return (
+    <div className="viz-box">
+      {title && <div className="viz-title">{title}</div>}
+      <div className="viz-stage">{children}</div>
+      {tip != null && tip !== '' && <div className="viz-tooltip">{tip}</div>}
+      {caption && <div className="viz-caption">{caption}</div>}
+    </div>
+  );
+}
+
 export function Equation({ children, cite }: { children: ReactNode; cite?: string }) {
   return (
     <div>

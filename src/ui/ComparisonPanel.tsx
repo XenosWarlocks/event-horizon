@@ -1,13 +1,19 @@
 /**
- * Earth Comparison Mode — "What if this object appeared here?"
- * Uses physics/comparison.ts; every number is derived, the verdict is
- * decided by computed thresholds, not vibes.
+ * "What If?" mode — the Cosmic Devourer Simulator.
+ *
+ * The live gravitational simulation is the main event; below it, the
+ * placement analyser answers "what if it appeared at distance X?" with
+ * the same physics engine (physics/comparison.ts). The mass slider is
+ * shared: it sets both the intruder in the simulation and the object
+ * being analysed.
  */
 
 import { useMemo, useState } from 'react';
 import { evaluatePlacement, PLACEMENTS } from '../physics/comparison';
 import { fmtLength, sig } from '../physics/units';
 import { StatRow, LogSlider, Equation } from './components';
+import { CosmicDevourer } from './CosmicDevourer';
+import { DisruptionDiagram } from './DisruptionDiagram';
 
 export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number; onMassChange: (m: number) => void }) {
   const [placeId, setPlaceId] = useState('pluto');
@@ -20,15 +26,15 @@ export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number
 
   return (
     <div className="panel-scroll">
-      <h2>What if it appeared here?</h2>
+      <h2>What if it came for us?</h2>
       <p className="subtitle">
-        Place a black hole near the Solar System and let the equations decide
-        what happens to Earth.
+        Drop a black hole into a real system and watch gravity do the rest —
+        then check the numbers below.
       </p>
 
       <h3>Black hole mass</h3>
       <LogSlider
-        label="Mass"
+        label="Mass (drives the simulation and the analysis)"
         value={massSolar}
         min={3}
         max={1e11}
@@ -36,7 +42,17 @@ export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number
         format={(v) => `${sig(v)} M☉`}
       />
 
-      <h3>Placement</h3>
+      <CosmicDevourer massSolar={massSolar} onMassChange={onMassChange} />
+
+      <div className="edu">
+        <b>Watch for the difference.</b> A stellar-mass hole shreds the Moon into a
+        glowing tidal stream long before anything reaches the horizon — its Roche
+        radius lies far <i>outside</i> r_s. A supermassive hole is the opposite:
+        Earth would cross M87*&rsquo;s horizon intact, redshifting to black, because
+        r_tide sits <i>inside</i> the horizon. Same equations, opposite deaths.
+      </div>
+
+      <h3>Placement analysis</h3>
       <div className="chips">
         {PLACEMENTS.map((p) => (
           <button key={p.id} className={`chip ${p.id === placeId ? 'active' : ''}`} onClick={() => setPlaceId(p.id)}>
@@ -49,7 +65,6 @@ export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number
         {result.verdict}
       </div>
 
-      <h3>The numbers</h3>
       <StatRow k="Distance" v={fmtLength(result.distanceM)} />
       <StatRow
         k="Its pull on Earth vs the Sun's"
@@ -77,6 +92,8 @@ export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number
       <StatRow k="Earth survives?" v={result.earthSurvives ? 'Yes' : 'No'} tone={result.earthSurvives ? 'ok' : 'warn'} />
       <StatRow k="Solar System stays bound?" v={result.solarSystemBound ? 'Yes' : 'No'} tone={result.solarSystemBound ? 'ok' : 'warn'} />
 
+      <DisruptionDiagram result={result} massSolar={massSolar} />
+
       <div className="edu">
         <b>Misconception check.</b> Black holes are not cosmic vacuum cleaners.
         Replace the Sun with a 1 M☉ black hole and Earth&rsquo;s orbit would not
@@ -86,6 +103,7 @@ export function ComparisonPanel({ massSolar, onMassChange }: { massSolar: number
 
       <h3>Behind the verdict</h3>
       <Equation cite="Newtonian tide across Earth's diameter">Δa = 2GM·R⊕ / d³</Equation>
+      <Equation cite="Hills 1975 — tidal disruption radius">r_tide = R·(2M/m)^⅓</Equation>
       <Equation cite="Hamilton & Burns 1992 — three-body stability">r_Hill ≈ d · (M☉ / 3M)^⅓</Equation>
       <Equation cite="Synge 1966, MNRAS 131 — shadow impact parameter">b_shadow = (√27/2) · r_s</Equation>
     </div>

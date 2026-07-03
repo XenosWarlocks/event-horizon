@@ -8,6 +8,7 @@ import { blackHoleProperties } from '../physics/blackhole';
 import { fmtLength, fmtDensity, fmtTimeYears, sig } from '../physics/units';
 import { LIGHT_YEAR } from '../physics/constants';
 import { StatRow } from './components';
+import { ScaleComparison } from './ScaleComparison';
 
 export function FamousPanel({
   selectedId, onSelect,
@@ -49,6 +50,8 @@ export function FamousPanel({
 
       <h3>Facts</h3>
       {sel.facts.map((f, i) => <div className="fact" key={i}>{f}</div>)}
+
+      <ScaleComparison name={sel.name} massSolar={sel.massSolar} />
 
       <h3>Primary reference</h3>
       <p className="cite">{sel.reference}</p>

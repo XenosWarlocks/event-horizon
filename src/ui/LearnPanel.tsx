@@ -9,6 +9,8 @@ import { timeDilationFactor, schwarzschildRadius } from '../physics/blackhole';
 import { M_SUN } from '../physics/constants';
 import { fmtTimeYears, fmtTemp, sig } from '../physics/units';
 import { StatRow, LogSlider, LinSlider, Equation } from './components';
+import { StellarEvolutionLab } from './StellarEvolutionLab';
+import { TimeDilationClocks } from './TimeDilationClocks';
 
 const REMNANT_LABEL: Record<string, string> = {
   'white-dwarf': 'White Dwarf',
@@ -48,6 +50,7 @@ export function LearnPanel() {
       <StatRow k="Final remnant" v={REMNANT_LABEL[fate.remnant]} tone={fate.remnant.includes('black-hole') ? 'warn' : 'ok'} />
       {fate.remnantMassSolar > 0 && <StatRow k="Remnant mass" v={`${sig(fate.remnantMassSolar)} M☉`} />}
       <div className="edu">{fate.pathway}</div>
+      <StellarEvolutionLab zamsMass={zams} />
       <Equation cite="Fuel ∝ M, burn rate ∝ L ∝ M³·⁵ → massive stars die young">t_MS ≈ 10 Gyr · M/L</Equation>
 
       <h3>2 · Time dilation near a black hole</h3>
@@ -69,6 +72,7 @@ export function LearnPanel() {
         k="While 24 h pass for you, far away…"
         v={fmtTimeYears((1 / Math.max(dilation, 1e-9) / 365.25))}
       />
+      <TimeDilationClocks rOverRs={rOverRs} />
       <Equation cite="Schwarzschild metric, static observer; MTW §25.4">dτ/dt = √(1 − r_s/r)</Equation>
       <div className="edu">
         <b>Interstellar's Miller's planet</b> (1 hour = 7 years, factor ~61,000)

@@ -10,6 +10,7 @@ import {
   fmtLuminosity, fmtEnergy, fmtCount, sig,
 } from '../physics/units';
 import { StatRow, Chips, LinSlider, Equation } from './components';
+import { ClusterCollapse } from './ClusterCollapse';
 
 export function ClusterPanel() {
   const [n, setN] = useState(1e9);
@@ -43,6 +44,8 @@ export function ClusterPanel() {
         onChange={setLogCompress}
         format={(v) => `${sig(Math.pow(10, v))}×`}
       />
+
+      <ClusterCollapse model={model} logCompress={logCompress} />
 
       <div className={`verdict ${model.isBlackHole || model.virialBeta > 0.3 ? 'bad' : 'good'}`}>
         {model.fate}

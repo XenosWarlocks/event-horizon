@@ -8,6 +8,7 @@ import { blackHoleProperties } from '../physics/blackhole';
 import { fmtLength, fmtDensity, fmtTemp, fmtTimeYears, fmtMass, sig, fmtLuminosity } from '../physics/units';
 import { M_SUN, C } from '../physics/constants';
 import { StatRow, LogSlider, LinSlider, Toggle, Equation } from './components';
+import { SpaceTimeStructure } from './SpaceTimeStructure';
 
 export interface ObservatoryState {
   classId: string;
@@ -121,6 +122,7 @@ export function BlackHoleStats({ massSolar, spin }: { massSolar: number; spin: n
       <StatRow k="Evaporation time" v={fmtTimeYears(p.evaporationTimeYears)} />
       <StatRow k="Eddington luminosity" v={fmtLuminosity(p.eddingtonLuminosity)} />
       <StatRow k="Deadly tides begin at" v={fmtLength(p.spaghettificationRadius)} tone="warn" />
+      <SpaceTimeStructure massSolar={massSolar} spin={spin} />
       {denseWarn && (
         <div className="edu">
           <b>Less dense than water.</b> Mean density inside the horizon falls
