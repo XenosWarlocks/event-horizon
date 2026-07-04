@@ -19,10 +19,12 @@ export interface ObservatoryState {
 }
 
 export function ObservatoryPanel({
-  state, onChange,
+  state, onChange, quality, onQualityChange,
 }: {
   state: ObservatoryState;
   onChange: (s: ObservatoryState) => void;
+  quality?: 'adaptive' | 'low' | 'medium' | 'high' | 'ultra';
+  onQualityChange?: (q: 'adaptive' | 'low' | 'medium' | 'high' | 'ultra') => void;
 }) {
   const cls = BLACK_HOLE_CLASSES.find((c) => c.id === state.classId)!;
   return (
@@ -74,6 +76,23 @@ export function ObservatoryPanel({
         on={state.beaming}
         onChange={(beaming) => onChange({ ...state, beaming })}
       />
+
+      {quality && onQualityChange && (
+        <>
+          <h3>Render Quality</h3>
+          <div className="chips">
+            {(['adaptive', 'low', 'medium', 'high', 'ultra'] as const).map((q) => (
+              <button
+                key={q}
+                className={`chip ${q === quality ? 'active' : ''}`}
+                onClick={() => onQualityChange(q)}
+              >
+                {q.charAt(0).toUpperCase() + q.slice(1)}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className="edu">
         <b>Why is one side of the disk brighter?</b> Gas orbits at a large
